@@ -20,11 +20,12 @@ Book _$BookFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Book {
+  String? get id => throw _privateConstructorUsedError;
   String? get bookTitle => throw _privateConstructorUsedError;
   String? get bookCode => throw _privateConstructorUsedError;
   String? get authorName => throw _privateConstructorUsedError;
   String? get publisherName => throw _privateConstructorUsedError;
-  String? get publishYear => throw _privateConstructorUsedError;
+  String? get publisherYear => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -37,11 +38,12 @@ abstract class $BookCopyWith<$Res> {
       _$BookCopyWithImpl<$Res, Book>;
   @useResult
   $Res call(
-      {String? bookTitle,
+      {String? id,
+      String? bookTitle,
       String? bookCode,
       String? authorName,
       String? publisherName,
-      String? publishYear});
+      String? publisherYear});
 }
 
 /// @nodoc
@@ -57,13 +59,18 @@ class _$BookCopyWithImpl<$Res, $Val extends Book>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? bookTitle = freezed,
     Object? bookCode = freezed,
     Object? authorName = freezed,
     Object? publisherName = freezed,
-    Object? publishYear = freezed,
+    Object? publisherYear = freezed,
   }) {
     return _then(_value.copyWith(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       bookTitle: freezed == bookTitle
           ? _value.bookTitle
           : bookTitle // ignore: cast_nullable_to_non_nullable
@@ -80,9 +87,9 @@ class _$BookCopyWithImpl<$Res, $Val extends Book>
           ? _value.publisherName
           : publisherName // ignore: cast_nullable_to_non_nullable
               as String?,
-      publishYear: freezed == publishYear
-          ? _value.publishYear
-          : publishYear // ignore: cast_nullable_to_non_nullable
+      publisherYear: freezed == publisherYear
+          ? _value.publisherYear
+          : publisherYear // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
   }
@@ -96,11 +103,12 @@ abstract class _$$BookImplCopyWith<$Res> implements $BookCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String? bookTitle,
+      {String? id,
+      String? bookTitle,
       String? bookCode,
       String? authorName,
       String? publisherName,
-      String? publishYear});
+      String? publisherYear});
 }
 
 /// @nodoc
@@ -113,13 +121,18 @@ class __$$BookImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? bookTitle = freezed,
     Object? bookCode = freezed,
     Object? authorName = freezed,
     Object? publisherName = freezed,
-    Object? publishYear = freezed,
+    Object? publisherYear = freezed,
   }) {
     return _then(_$BookImpl(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       bookTitle: freezed == bookTitle
           ? _value.bookTitle
           : bookTitle // ignore: cast_nullable_to_non_nullable
@@ -136,9 +149,9 @@ class __$$BookImplCopyWithImpl<$Res>
           ? _value.publisherName
           : publisherName // ignore: cast_nullable_to_non_nullable
               as String?,
-      publishYear: freezed == publishYear
-          ? _value.publishYear
-          : publishYear // ignore: cast_nullable_to_non_nullable
+      publisherYear: freezed == publisherYear
+          ? _value.publisherYear
+          : publisherYear // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -148,15 +161,18 @@ class __$$BookImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$BookImpl implements _Book {
   const _$BookImpl(
-      {this.bookTitle,
+      {this.id,
+      this.bookTitle,
       this.bookCode,
       this.authorName,
       this.publisherName,
-      this.publishYear});
+      this.publisherYear});
 
   factory _$BookImpl.fromJson(Map<String, dynamic> json) =>
       _$$BookImplFromJson(json);
 
+  @override
+  final String? id;
   @override
   final String? bookTitle;
   @override
@@ -166,11 +182,11 @@ class _$BookImpl implements _Book {
   @override
   final String? publisherName;
   @override
-  final String? publishYear;
+  final String? publisherYear;
 
   @override
   String toString() {
-    return 'Book(bookTitle: $bookTitle, bookCode: $bookCode, authorName: $authorName, publisherName: $publisherName, publishYear: $publishYear)';
+    return 'Book(id: $id, bookTitle: $bookTitle, bookCode: $bookCode, authorName: $authorName, publisherName: $publisherName, publisherYear: $publisherYear)';
   }
 
   @override
@@ -178,6 +194,7 @@ class _$BookImpl implements _Book {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$BookImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.bookTitle, bookTitle) ||
                 other.bookTitle == bookTitle) &&
             (identical(other.bookCode, bookCode) ||
@@ -186,14 +203,14 @@ class _$BookImpl implements _Book {
                 other.authorName == authorName) &&
             (identical(other.publisherName, publisherName) ||
                 other.publisherName == publisherName) &&
-            (identical(other.publishYear, publishYear) ||
-                other.publishYear == publishYear));
+            (identical(other.publisherYear, publisherYear) ||
+                other.publisherYear == publisherYear));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, bookTitle, bookCode, authorName, publisherName, publishYear);
+  int get hashCode => Object.hash(runtimeType, id, bookTitle, bookCode,
+      authorName, publisherName, publisherYear);
 
   @JsonKey(ignore: true)
   @override
@@ -211,14 +228,17 @@ class _$BookImpl implements _Book {
 
 abstract class _Book implements Book {
   const factory _Book(
-      {final String? bookTitle,
+      {final String? id,
+      final String? bookTitle,
       final String? bookCode,
       final String? authorName,
       final String? publisherName,
-      final String? publishYear}) = _$BookImpl;
+      final String? publisherYear}) = _$BookImpl;
 
   factory _Book.fromJson(Map<String, dynamic> json) = _$BookImpl.fromJson;
 
+  @override
+  String? get id;
   @override
   String? get bookTitle;
   @override
@@ -228,7 +248,7 @@ abstract class _Book implements Book {
   @override
   String? get publisherName;
   @override
-  String? get publishYear;
+  String? get publisherYear;
   @override
   @JsonKey(ignore: true)
   _$$BookImplCopyWith<_$BookImpl> get copyWith =>

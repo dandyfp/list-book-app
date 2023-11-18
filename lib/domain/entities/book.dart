@@ -7,21 +7,23 @@ part 'book.g.dart';
 @freezed
 class Book with _$Book {
   const factory Book({
+    String? id,
     String? bookTitle,
     String? bookCode,
     String? authorName,
     String? publisherName,
-    String? publishYear,
+    String? publisherYear,
   }) = _Book;
 
   factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
 
   factory Book.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     return Book(
+      id: snapshot.id,
       publisherName: snapshot.data()?['publisherName'],
       bookTitle: snapshot.data()?['bookTitle'],
       authorName: snapshot.data()?['authorName'],
-      publishYear: snapshot.data()?['publishYear'],
+      publisherYear: snapshot.data()?['publisherYear'],
       bookCode: snapshot.data()?['bookCode'],
     );
   }

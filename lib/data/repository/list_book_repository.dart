@@ -14,11 +14,9 @@ abstract interface class ListBookRepository {
 
   Future<Result<void>> deleteBook({required String uidBook});
 
-  Future<Result<Book>> getBook({required String uidBook});
-
   Future<Result> updateBook({
     required String bookTitle,
-    required String bookCode,
+    required String uid,
     required String authorName,
     required String publisherName,
     required String publisherYear,

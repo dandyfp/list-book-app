@@ -1,4 +1,5 @@
 import 'package:book_app/presentation/helpers/app_colors.dart';
+import 'package:book_app/presentation/pages/book_page/methods/item_book.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,6 +19,7 @@ class BookPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,
         backgroundColor: backgroundColor,
         forceMaterialTransparency: true,
@@ -35,12 +37,21 @@ class BookPage extends ConsumerWidget {
                 publisherNameController: publisherNameController,
                 authNameController: authNameController,
                 onTap: () {
-                  ref.read(bookDataProvider.notifier).createBook(
+                  ref
+                      .read(bookDataProvider.notifier)
+                      .createBook(
                         bookTitle: nameBookController.text,
                         authorName: authNameController.text,
                         publisherName: publisherNameController.text,
                         publisherYear: publishYearController.text,
-                      );
+                      )
+                      .whenComplete(() {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BookPage(),
+                        ));
+                  });
                 },
               );
             },
@@ -79,7 +90,7 @@ class BookPage extends ConsumerWidget {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  ...(ref.watch(getAllBookProvider).when(
+                  ...(ref.watch(bookDataProvider).when(
                         error: (error, stackTrace) => [
                           Center(
                             child: Text(error.toString()),
@@ -94,28 +105,44 @@ class BookPage extends ConsumerWidget {
                           return data
                               .map((e) => Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                                    child: Card(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(bottom: 10, top: 5),
-                                        child: ListTile(
-                                          title: Text(e.bookTitle ?? ""),
-                                          subtitle: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text('Penulis ${e.authorName}'),
-                                              Text('Tahun ${e.publishYear}'),
-                                              Text('Penerbi ${e.publisherName}'),
-                                            ],
-                                          ),
-                                          trailing: Column(
-                                            children: [
-                                              const Icon(Icons.edit),
-                                              verticalSpace(8),
-                                              const Icon(Icons.delete),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                                    child: itemBook(
+                                      e: e,
+                                      onTapEdit: () {
+                                        nameBookController.text = e.bookTitle ?? '';
+                                        authNameController.text = e.authorName ?? '';
+                                        publishYearController.text = e.publisherYear ?? '';
+                                        publisherNameController.text = e.publisherName ?? '';
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return DialogFormBook(
+                                              nameBookController: nameBookController,
+                                              publishYearController: publishYearController,
+                                              publisherNameController: publisherNameController,
+                                              authNameController: authNameController,
+                                              onTap: () {
+                                                ref
+                                                    .read(bookDataProvider.notifier)
+                                                    .updateBook(
+                                                      uid: e.id ?? '',
+                                                      bookTitle: nameBookController.text,
+                                                      authorName: authNameController.text,
+                                                      publisherName: publisherNameController.text,
+                                                      publisherYear: publishYearController.text,
+                                                    )
+                                                    .whenComplete(() {
+                                                  Navigator.pushReplacement(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) => BookPage(),
+                                                      ));
+                                                });
+                                              },
+                                            );
+                                          },
+                                        );
+                                      },
+                                      onTapDelete: () {},
                                     ),
                                   ))
                               .toList();

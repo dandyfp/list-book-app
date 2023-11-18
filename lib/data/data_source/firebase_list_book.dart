@@ -40,15 +40,17 @@ class FirebaseListBook implements ListBookRepository {
   }
 
   @override
-  Future<Result<void>> deleteBook({required String uidBook}) {
-    // TODO: implement deleteBook
-    throw UnimplementedError();
-  }
+  Future<Result<void>> deleteBook({required String uidBook}) async {
+    DocumentReference<Map<String, dynamic>> doc = _firebaseFirestore.doc('books/$uidBook');
+    await doc.delete();
 
-  @override
-  Future<Result<Book>> getBook({required String uidBook}) {
-    // TODO: implement getBook
-    throw UnimplementedError();
+    DocumentSnapshot<Map<String, dynamic>> result = await doc.get();
+    if (result.exists) {
+      await getBooks();
+      return const Result.failed('Failed delete book');
+    } else {
+      return const Result.success(null);
+    }
   }
 
   @override
@@ -67,13 +69,27 @@ class FirebaseListBook implements ListBookRepository {
   }
 
   @override
-  Future<Result> updateBook(
-      {required String bookTitle,
-      required String bookCode,
-      required String authorName,
-      required String publisherName,
-      required String publisherYear}) {
-    // TODO: implement updateBook
-    throw UnimplementedError();
+  Future<Result> updateBook({
+    required String bookTitle,
+    required String uid,
+    required String authorName,
+    required String publisherName,
+    required String publisherYear,
+  }) async {
+    DocumentReference<Map<String, dynamic>> documentReference = _firebaseFirestore.doc('books/$uid');
+    await documentReference.update(Book(
+      bookTitle: bookTitle,
+      authorName: authorName,
+      publisherName: publisherName,
+      publisherYear: publisherYear,
+    ).toJson());
+    DocumentSnapshot<Map<String, dynamic>> result = await documentReference.get();
+
+    if (result.exists) {
+      await getBooks();
+      return Result.success(updateBook);
+    } else {
+      return const Result.failed('Failed to update book');
+    }
   }
 }
