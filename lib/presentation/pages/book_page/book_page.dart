@@ -1,22 +1,34 @@
 import 'package:book_app/presentation/helpers/app_colors.dart';
+import 'package:book_app/presentation/helpers/connectivity_service.dart';
 import 'package:book_app/presentation/pages/book_page/methods/item_book.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:book_app/presentation/helpers/spacing.dart';
 import 'package:book_app/presentation/provider/book_data/book_data_provider.dart';
-import 'package:book_app/presentation/provider/book_data/get_all_book.dart';
 import 'package:book_app/presentation/widget/text_field.dart';
 
-class BookPage extends ConsumerWidget {
-  BookPage({super.key});
+class BookPage extends ConsumerStatefulWidget {
+  const BookPage({super.key});
+
+  @override
+  ConsumerState<BookPage> createState() => _BookPageState();
+}
+
+class _BookPageState extends ConsumerState<BookPage> {
+  final ConnectivityService connectivityService = ConnectivityService();
   final TextEditingController nameBookController = TextEditingController();
   final TextEditingController publishYearController = TextEditingController();
   final TextEditingController authNameController = TextEditingController();
-
   final TextEditingController publisherNameController = TextEditingController();
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -28,6 +40,11 @@ class BookPage extends ConsumerWidget {
       ),
       floatingActionButton: GestureDetector(
         onTap: () {
+          nameBookController.clear();
+          publishYearController.clear();
+          publisherNameController.clear();
+          authNameController.clear;
+
           showDialog(
             context: context,
             builder: (context) {
@@ -102,7 +119,7 @@ class BookPage extends ConsumerWidget {
                           ),
                         ],
                         data: (data) {
-                          return data
+                          return data!
                               .map((e) => Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 10),
                                     child: itemBook(
@@ -142,7 +159,20 @@ class BookPage extends ConsumerWidget {
                                           },
                                         );
                                       },
-                                      onTapDelete: () {},
+                                      onTapDelete: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return ConfirmationDelete(
+                                              onTapDelete: () {
+                                                ref.read(bookDataProvider.notifier).deleteBook(e.id ?? '').whenComplete(() {
+                                                  Navigator.pop(context);
+                                                });
+                                              },
+                                            );
+                                          },
+                                        );
+                                      },
                                     ),
                                   ))
                               .toList();
@@ -151,6 +181,69 @@ class BookPage extends ConsumerWidget {
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ConfirmationDelete extends StatelessWidget {
+  final VoidCallback onTapDelete;
+  const ConfirmationDelete({
+    required this.onTapDelete,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Yakin ingin hapus?',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            verticalSpace(20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                    onPressed: onTapDelete,
+                    child: const Text(
+                      'Hapus',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 100,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Batal',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )),
+                ),
+              ],
+            )
           ],
         ),
       ),
@@ -187,7 +280,6 @@ class DialogFormBook extends StatelessWidget {
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
             ),
             KTextfield(
-              labelText: 'Name book',
               controller: nameBookController,
             ),
             verticalSpace(10),
@@ -196,7 +288,6 @@ class DialogFormBook extends StatelessWidget {
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
             ),
             KTextfield(
-              labelText: 'Author Name',
               controller: authNameController,
             ),
             verticalSpace(10),
@@ -205,7 +296,6 @@ class DialogFormBook extends StatelessWidget {
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
             ),
             KTextfield(
-              labelText: 'Publish Year',
               controller: publishYearController,
             ),
             verticalSpace(10),
@@ -214,7 +304,6 @@ class DialogFormBook extends StatelessWidget {
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
             ),
             KTextfield(
-              labelText: 'Publisher Name',
               controller: publisherNameController,
             ),
             verticalSpace(20),

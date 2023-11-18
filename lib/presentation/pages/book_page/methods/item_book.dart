@@ -17,7 +17,7 @@ Widget itemBook({
           children: [
             Text('Penulis ${e.authorName}'),
             Text('Tahun ${e.publisherYear}'),
-            Text('Penerbi ${e.publisherName}'),
+            Text('Penerbit ${e.publisherName}'),
           ],
         ),
         trailing: Column(

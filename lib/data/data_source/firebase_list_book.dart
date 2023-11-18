@@ -1,3 +1,4 @@
+import 'package:book_app/data/database_helper/database_helper.dart';
 import 'package:book_app/data/repository/list_book_repository.dart';
 import 'package:book_app/domain/entities/book.dart';
 import 'package:book_app/domain/entities/result.dart';
@@ -7,6 +8,8 @@ class FirebaseListBook implements ListBookRepository {
   final FirebaseFirestore _firebaseFirestore;
 
   FirebaseListBook({FirebaseFirestore? firebaseFirestore}) : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
+
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
   @override
   Future<Result> createBook(
       {required String bookTitle, String? bookCode, required String authorName, required String publisherName, required String publisherYear}) async {
@@ -61,10 +64,13 @@ class FirebaseListBook implements ListBookRepository {
 
     if (querySnapshot.docs.isNotEmpty) {
       List<Book> bookList = querySnapshot.docs.map((e) => Book.fromSnapshot(e)).toList();
+      bookList.map((e) => _databaseHelper.insertBook(e.toJson()));
 
       return Result.success(bookList);
     } else {
-      return const Result.failed('Failed fetch data');
+      List<Map<String, dynamic>> result = await _databaseHelper.getBukuList();
+      List<Book> list = result.map((e) => Book.fromJson(e)).toList();
+      return Result.success(list);
     }
   }
 

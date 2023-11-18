@@ -2,10 +2,13 @@ import 'package:book_app/domain/entities/book.dart';
 import 'package:book_app/domain/entities/result.dart';
 import 'package:book_app/domain/usecases/create_book/create_book.dart';
 import 'package:book_app/domain/usecases/create_book/create_book_param.dart';
+import 'package:book_app/domain/usecases/delete_book/delete_book.dart';
+import 'package:book_app/domain/usecases/delete_book/delete_book_param.dart';
 import 'package:book_app/domain/usecases/get_books/get_book.dart';
 import 'package:book_app/domain/usecases/update_book/update_book.dart';
 import 'package:book_app/domain/usecases/update_book/update_book_param.dart';
 import 'package:book_app/presentation/provider/usecases/create_book_provider.dart';
+import 'package:book_app/presentation/provider/usecases/delete_book_provider.dart';
 import 'package:book_app/presentation/provider/usecases/get_books_provider.dart';
 import 'package:book_app/presentation/provider/usecases/update_book_provider.dart';
 import 'package:flutter/material.dart';
@@ -83,8 +86,23 @@ class BookData extends _$BookData {
     }
   }
 
+  Future<void> deleteBook(String uid) async {
+    state = const AsyncLoading();
+
+    DeleteBook deleteBook = ref.read(deleteBookProvider);
+    var result = await deleteBook(DeleteBookParam(uid: uid));
+
+    switch (result) {
+      case Success():
+        getBooks();
+      case Failed(:final message):
+        state = AsyncError(FlutterError(message), StackTrace.current);
+        state = const AsyncData([]);
+    }
+  }
+
   @override
-  FutureOr<List<Book>> build() async {
+  FutureOr<List<Book>?> build() async {
     GetBooks getallBook = ref.read(getBooksProvider);
 
     var getallBookResult = await getallBook(null);
