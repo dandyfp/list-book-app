@@ -66,7 +66,7 @@ class _BookPageState extends ConsumerState<BookPage> {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => BookPage(),
+                          builder: (context) => const BookPage(),
                         ));
                   });
                 },
@@ -151,7 +151,7 @@ class _BookPageState extends ConsumerState<BookPage> {
                                                   Navigator.pushReplacement(
                                                       context,
                                                       MaterialPageRoute(
-                                                        builder: (context) => BookPage(),
+                                                        builder: (context) => const BookPage(),
                                                       ));
                                                 });
                                               },
